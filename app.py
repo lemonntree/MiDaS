@@ -1,9 +1,23 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os
 import subprocess
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+    try:
+        # Get the uploaded file
+        file = request.files['image']
+        
+        # Save the file to the "input" folder
+        file.save(os.path.join('input', file.filename))
+        
+        return jsonify({"message": "Image uploaded successfully"})
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 @app.route('/execute_command')
 def execute_command():
