@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageUpload</title>
+    <title>Depthree</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <button id="executeButton">Execute Python Command</button>
+    
     <br><br>
     <input type="file" id="imageUploadInput">
-    <button id="uploadButton">Upload Image</button>
-
-    <script src="script.js"></script>
+    <div class="button-container">
+        <button class="button" id="uploadButton">Upload</button>
+        <button class="button" id="executeButton">Execute</button>
+    </div>
+ 
+    <canvas class="webgl"></canvas>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

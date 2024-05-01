@@ -1,0 +1,61 @@
+* {
+    margin: 0;
+    padding: 0;
+
+    position: relative;
+}
+
+html,
+body {
+    overflow: hidden;
+}
+
+.webgl {
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+    width: 100%;
+    height: 100%;
+}
+
+
+#uploadButton,
+#executeButton {
+
+    position: fixed;
+    top: 85%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    display: flex;
+   
+}
+#uploadButton {
+    position: fixed;
+    top: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    display: flex;
+}
+.button {
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 30px; /* Adjust border-radius for fully rounded corners */
+    background-color: rgba(255, 193, 7, 0.7); /* Semi-transparent background color */
+    color: #333; /* Text color */
+    font-size: 16px; /* Adjust font size as needed */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-items: center; /* Center items vertically */
+}
+
+.button:hover {
+    background-color: rgba(255, 210, 27, 1); /* Lighten the background on hover */
+}
+#uploadButton::before {
+    content: "+"; /* Unicode character for the plus sign */
+    font-size: 20px; /* Adjust the size of the plus sign */
+    margin-right: 2px; /* Add spacing between the plus sign and text */
+}
