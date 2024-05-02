@@ -36,14 +36,32 @@ document.getElementById("executeButton").addEventListener("click", function() {
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             // Handle the response from the Python backend
-            alert(xhr.responseText);
+            //alert(xhr.responseText);
+            updateTextures();
         }
     };
     xhr.send();
 });
 
 
-const gui = new dat.GUI()
+function updateTextures() {
+    // Load the newly generated images as textures
+    const textureLoader = new THREE.TextureLoader();
+    const newColorTexture = textureLoader.load("1/colortextureinput.jpg");
+    const newHeightmapTexture = textureLoader.load("1/colortextureinput-dpt_beit_large_512.png");
+
+    // Update the material with the new textures
+    material.map = newColorTexture;
+    material.displacementMap = newHeightmapTexture;
+   
+    const plane2 = new THREE.Mesh(planeGeometry, material);
+    plane2.position.set(0, 0, 0);
+    scene.add(plane2);
+    scene.remove(plane2)
+    scene.add(plane2);
+}
+
+//const gui = new dat.GUI()
 const loadingManager = new THREE.LoadingManager()
 loadingManager.onStart = ()=>{
     console.log('onStart')
@@ -91,8 +109,8 @@ scene.add(cube,cube2,cube3,cube4,cube5);
 //adding painting plane
 
 const textureLoader = new THREE.TextureLoader(loadingManager);
-const girlColorTexture = textureLoader.load('static/textures/taikong/color.jpg');
-const girlHeightTexture = textureLoader.load('static/textures/taikong/height.png');
+const girlColorTexture = textureLoader.load('static/textures/taikong3/color.jpg');
+const girlHeightTexture = textureLoader.load('static/textures/taikong3/height.png');
 //const girlNormalTexture = textureLoader.load('static/textures/girl/normal.png');
 const material = new THREE.MeshStandardMaterial({ map: girlColorTexture });
 material.displacementMap = girlHeightTexture;
@@ -104,7 +122,7 @@ plane.position.set(0, 0, 0);
 scene.add(plane);
 
 /*** Lights */
-const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+const ambientLight = new THREE.AmbientLight(0xffffff, 2)
 const pointLight = new THREE.PointLight(0xffffff,1)
 pointLight.position.x = 2
 pointLight.position.y = 3
@@ -138,15 +156,22 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 1
-camera.position.y = 1
-camera.position.z = 0.5
+camera.position.x = 0
+camera.position.y = 0
+camera.position.z = 0.6
 scene.add(camera)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
+// Limiting the rotation vertically
+controls.minPolarAngle = -Math.PI / 13; // -45 degrees in radians
+controls.maxPolarAngle = Math.PI / 1.5; // 45 degrees in radians
+
+// Limiting the rotation horizontally
+controls.minAzimuthAngle = - Math.PI / 4; // -45 degrees in radians
+controls.maxAzimuthAngle = Math.PI / 4; // 45 degrees in radians
 /**
  * Renderer
  */

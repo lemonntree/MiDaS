@@ -4,16 +4,26 @@ import os
 import subprocess
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-
+CORS(app)
+#CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
     try:
+        # Delete existing files in the folder "1" except for specific files
+        folder_path = 'frontend/1'
+        files_to_keep = ['colortextureinput-dpt_beit_large_512.png', 'colortextureinput-dpt_beit_large_512.pfm', 'colortextureinput.jpg']
+        
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            if filename not in files_to_keep:
+                os.remove(file_path)
+
         # Get the uploaded file
         file = request.files['image']
         
         # Save the file to the "input" folder
-        file.save(os.path.join('input', file.filename))
+        file.filename = 'colortextureinput' + os.path.splitext(file.filename)[1]
+        file.save(os.path.join('frontend','1', file.filename))
         
         return jsonify({"message": "Image uploaded successfully"})
     except Exception as e:
@@ -23,14 +33,14 @@ def upload_image():
 def execute_command():
     try:
         # Execute the command using subprocess
-        command = ["python3", "run.py", "--model_type", "dpt_beit_large_512", "--input_path", "input", "--output_path", "output"]
+        command = ["python3", "run.py", "--model_type", "dpt_beit_large_512", "--input_path", "frontend/1", "--output_path", "frontend/1"]
         result = subprocess.run(command, capture_output=True, text=True)
         
         # Check if the command was successful
         if result.returncode == 0:
-            return jsonify({"message": "Command executed successfully", "output": result.stdout})
+            return jsonify({"message": "Command executed successfully", "frontend/1": result.stdout})
         else:
-            return jsonify({"error": "Failed to execute command", "output": result.stdout})
+            return jsonify({"error": "Failed to execute command", "frontend/1": result.stdout})
     except Exception as e:
         return jsonify({"error": str(e)})
 
