@@ -39,7 +39,16 @@ body {
     z-index: 999;
     display: flex;
 }
-.button {
+#imageUploadInput {
+    position: fixed;
+    top: 75%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    display: flex;
+}
+
+.button,#imageUploadInput {
     padding: 10px 20px; /* Adjust padding as needed */
     border: none;
     border-radius: 30px; /* Adjust border-radius for fully rounded corners */
@@ -59,3 +68,4 @@ body {
     font-size: 20px; /* Adjust the size of the plus sign */
     margin-right: 2px; /* Add spacing between the plus sign and text */
 }
+
