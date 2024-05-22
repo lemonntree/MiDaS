@@ -7,6 +7,7 @@ import * as dat from 'dat.gui'
 document.addEventListener("DOMContentLoaded", function() {
     const uploadButton = document.getElementById("uploadButton");
     const imageUploadInput = document.getElementById("imageUploadInput");
+    const loadingSpinner = document.getElementById("loading");
 
     uploadButton.addEventListener("click", function() {
         imageUploadInput.click();
@@ -16,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var file = imageUploadInput.files[0];
 
         if (file) {
+            loadingSpinner.style.display = "block";
             // Create a FormData object
             var formData = new FormData();
             formData.append("image", file);
@@ -24,8 +26,16 @@ document.addEventListener("DOMContentLoaded", function() {
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "http://127.0.0.1:5000/upload_image", true); // Modify the URL here
             xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    alert("Image uploaded successfully!");
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        //alert("Image uploaded successfully!");
+                        //updateTextures(); // Call function to update textures after upload
+                    } else {
+                        alert("Error uploading image.");
+                    }
+
+                    // Hide the loading spinner after upload is finished
+                    //loadingSpinner.style.display = "none";
                 }
             };
             xhr.send(formData);
@@ -37,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Event listener for the "Execute Command" button, "executeButton" is not hidden, its function is combined with upload button
 document.getElementById("uploadButton").addEventListener("click", function() {
+    const loadingSpinner = document.getElementById("loading");
     // Make an AJAX request to the Python backend
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "http://127.0.0.1:5000/execute_command", true); // Modify the URL here
@@ -45,6 +56,7 @@ document.getElementById("uploadButton").addEventListener("click", function() {
             // Handle the response from the Python backend
             //alert(xhr.responseText);
             updateTextures();
+            loadingSpinner.style.display = "none";
         }
     };
     xhr.send();
@@ -156,6 +168,8 @@ window.addEventListener('resize', () =>
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+
 })
 
 /**
