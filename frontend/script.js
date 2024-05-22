@@ -80,6 +80,15 @@ function updateTextures() {
     scene.add(plane2);
 }
 
+// Function to update plane2's ratio based on image dimensions
+function updatePlaneRatio(imageWidth, imageHeight) {
+    // Calculate aspect ratio of the image
+    const aspectRatio = imageWidth / imageHeight;
+
+    // Update plane2's scale based on the aspect ratio
+    plane2.scale.set(aspectRatio, 1, 1);
+}
+
 //const gui = new dat.GUI()
 const loadingManager = new THREE.LoadingManager()
 loadingManager.onStart = ()=>{
