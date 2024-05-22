@@ -29,7 +29,7 @@ document.getElementById("uploadButton").addEventListener("click", function() {
 });});
 
 // Event listener for the "Execute Command" button
-document.getElementById("executeButton").addEventListener("click", function() {
+document.getElementById("uploadButton").addEventListener("click", function() {
     // Make an AJAX request to the Python backend
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "http://127.0.0.1:5000/execute_command", true); // Modify the URL here
@@ -103,7 +103,7 @@ cube3.position.set(-0.5, -0.5, 0); // Adjust the position as needed
 cube4.position.set(0.5, 0.5, 0); // Adjust the position as needed
 cube5.position.set(0.5, -0.5, 0); // Adjust the position as needed
 // Add the cube to the scene
-scene.add(cube,cube2,cube3,cube4,cube5);
+scene.add(cube2,cube3,cube4,cube5);
 
 
 //adding painting plane
@@ -114,7 +114,7 @@ const girlHeightTexture = textureLoader.load('static/textures/taikong3/height.pn
 //const girlNormalTexture = textureLoader.load('static/textures/girl/normal.png');
 const material = new THREE.MeshStandardMaterial({ map: girlColorTexture });
 material.displacementMap = girlHeightTexture;
-material.displacementScale = 0.2;
+material.displacementScale = 0.4;
 material.side = THREE.DoubleSide;
 const planeGeometry = new THREE.PlaneGeometry(1, 1, 256,256);
 const plane = new THREE.Mesh(planeGeometry, material);
@@ -158,7 +158,7 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 0
 camera.position.y = 0
-camera.position.z = 0.6
+camera.position.z = 0.55
 scene.add(camera)
 
 // Controls
