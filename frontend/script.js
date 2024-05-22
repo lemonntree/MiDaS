@@ -4,6 +4,16 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 
 // Event listener for the "Upload Image" button
+let aspectRatio =1.0; 
+
+let planes = [];
+
+function removePlanes() {
+    planes.forEach(plane => {
+        scene.remove(plane);
+    });
+    planes = []; // Clear the planes array
+}
 document.addEventListener("DOMContentLoaded", function() {
     const uploadButton = document.getElementById("uploadButton");
     const imageUploadInput = document.getElementById("imageUploadInput");
@@ -18,6 +28,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (file) {
             loadingSpinner.style.display = "block";
+            removePlanes()
+            uploadButton.style.display = "none";
             // Create a FormData object
             var formData = new FormData();
             formData.append("image", file);
@@ -30,6 +42,26 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (xhr.status === 200) {
                         //alert("Image uploaded successfully!");
                         //updateTextures(); // Call function to update textures after upload
+                        // Handle the response from the Python backend
+                        // Make an AJAX request to the Python backend
+                        var xhrCommand = new XMLHttpRequest();
+                        xhrCommand.open("GET", "http://127.0.0.1:5000/execute_command", true); // Modify the URL here
+                        xhrCommand.onreadystatechange = function() {
+                            if (xhrCommand.readyState === 4 && xhrCommand.status === 200) {
+                                // Handle the response from the Python backend
+                                const response = JSON.parse(xhrCommand.responseText);
+                                const colorTextureUrl = response.colorTextureUrl;
+                                const heightTextureUrl = response.heightTextureUrl;
+                                aspectRatio = response.imageWidth / response.imageHeight
+                                console.log(aspectRatio)
+                                // Update textures with URLs received from the server
+                                //updateTextures(colorTextureUrl, heightTextureUrl);
+                                updateTextures()
+                                loadingSpinner.style.display = "none";
+                                uploadButton.style.display = "block";
+                            }
+                        };
+                        xhrCommand.send();
                     } else {
                         alert("Error uploading image.");
                     }
@@ -45,49 +77,26 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// Event listener for the "Execute Command" button, "executeButton" is not hidden, its function is combined with upload button
-document.getElementById("uploadButton").addEventListener("click", function() {
-    const loadingSpinner = document.getElementById("loading");
-    // Make an AJAX request to the Python backend
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://127.0.0.1:5000/execute_command", true); // Modify the URL here
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            // Handle the response from the Python backend
-            //alert(xhr.responseText);
-            updateTextures();
-            loadingSpinner.style.display = "none";
-        }
-    };
-    xhr.send();
-});
-
 
 function updateTextures() {
+    console.log("textures updated")
     // Load the newly generated images as textures
-    const textureLoader = new THREE.TextureLoader();
-    const newColorTexture = textureLoader.load("1/colortextureinput.jpg");
-    const newHeightmapTexture = textureLoader.load("1/colortextureinput-dpt_beit_large_512.png");
+    let textureLoader = new THREE.TextureLoader();
+    let newColorTexture = textureLoader.load("1/colortextureinput.jpg");
+    let newHeightmapTexture = textureLoader.load("1/colortextureinput-dpt_beit_large_512.png");
 
     // Update the material with the new textures
     material.map = newColorTexture;
     material.displacementMap = newHeightmapTexture;
    
-    const plane2 = new THREE.Mesh(planeGeometry, material);
+    //planes.forEach(plane => scene.remove(plane));
+    let plane2 = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 256, 256), material);
     plane2.position.set(0, 0, 0);
     scene.add(plane2);
-    scene.remove(plane2)
-    scene.add(plane2);
+    planes.push(plane2)
 }
 
-// Function to update plane2's ratio based on image dimensions
-function updatePlaneRatio(imageWidth, imageHeight) {
-    // Calculate aspect ratio of the image
-    const aspectRatio = imageWidth / imageHeight;
 
-    // Update plane2's scale based on the aspect ratio
-    plane2.scale.set(aspectRatio, 1, 1);
-}
 
 //const gui = new dat.GUI()
 const loadingManager = new THREE.LoadingManager()
@@ -131,7 +140,7 @@ cube3.position.set(-0.5, -0.5, 0); // Adjust the position as needed
 cube4.position.set(0.5, 0.5, 0); // Adjust the position as needed
 cube5.position.set(0.5, -0.5, 0); // Adjust the position as needed
 // Add the cube to the scene
-scene.add(cube2,cube3,cube4,cube5);
+//scene.add(cube2,cube3,cube4,cube5);
 
 
 //adding painting plane
